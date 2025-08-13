@@ -14,39 +14,22 @@ import java.io.Serializable;
 @Data
 @Schema(title="接口返回对象", description="接口返回对象")
 public class Result<T> implements Serializable {
-
-	/**
-	 * 成功标志
-	 */
+	// 成功标志
 	@Schema(description = "成功标志")
 	private boolean success = true;
-
-	/**
-	 * 返回处理消息
-	 */
+	// 返回处理消息
 	@Schema(description = "返回处理消息")
 	private String message = "";
-
-	/**
-	 * 返回代码
-	 */
+	// 返回代码
 	@Schema(description = "返回代码")
 	private Integer code = 0;
-
-	/**
-	 * 返回数据对象 data
-	 */
+	// 返回数据对象 data
 	@Schema(description = "返回数据对象")
 	private T result;
-
-	/**
-	 * 时间戳
-	 */
+	// 时间戳
 	@Schema(description = "时间戳")
 	private long timestamp = System.currentTimeMillis();
-
-	public Result() {
-	}
+	public Result() {}
 
     /**
      * 兼容VUE3版token失效不跳转登录页面

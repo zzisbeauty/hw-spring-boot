@@ -1,6 +1,6 @@
 #配置启动端口
 server:
-  port: 8222
+  port: 8223
   servlet:
     context-path: /smartwaterai
 
@@ -91,10 +91,14 @@ autoApi:
   #用户票
   ticket: eyJraWQiOiI3MjRjYzc4ZC1jYTFjLTRiYWMtOGMwNi1lM2U1Y2MxMWZiMDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXNpb25odWJ4IiwiYXVkIjoiYXBpMTU2NWY0MGU5YzRiNWRjNiIsIm5iZiI6MTc1MjE5NDMyMSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSJdLCJpc3MiOiJodHRwOi8vMTAuMC4xNS40MDo4MDAxL2F1dGhsaW5rIiwiZGVwdElkIjoiMTA1Mjc0N2MtZTY5Ny00ZmEyLTk5MzEtNjZiZmM0N2ZmNGQ5IiwiZXhwIjoxNzUyMjgwNzIxLCJpYXQiOjE3NTIxOTQzMjEsImp0aSI6IjUzZjU3M2NlLTQ0MjktNDY5Ni1hMzdjLTc1N2I2ZmRlYTdlNSJ9.2KpxPPJSmvmXBV8wnCUgQjnLDtrcXvpBhD0lreEc87jA2PKh0_aF8hCsxaNK32buu0SJbFoNF8Y9j0yeJzJfRU7J7Ikr6WUOs2vY5EqQnbEaexd5ZZDb1Ihf04wLpu3ikcc7QyIUsIiPOji6355g2rpGkY7O4LSIwn5eaxQdEqscUJlQLS3qqlXOSIakcvGa1hgx2I3cwDFEmqWeeqU5txDBkC60MwhgEGJv7HQBymkuKOc5tTWRPUaAs6upc0beNwqK_GHSffkCYPb0TAparSyOKFKYS-20ozd3AMJoa30hOd_rSdD23xKK2dml5pFYcM4xEkXTlYzT-vjdvm3-Sg
 
+
+shuiwu:
+  urlPrefix: http://10.0.15.21:5627/hanwei
+  bearerToken: dataset-T2Hi8kmyqQCMmh6ZEtwOV2Xt  # console api 权限控制
 yanjiuyuan:
   urlPrefix: https://www-k8s.xiangyuniot.com/flow-permission
 
-#华为SIS语音转换服务
+# 华为SIS语音转换服务
 sis:
   # 认证用的ak和sk硬编码到代码中或者明文存储都有很大的安全风险，建议在配置文件或者环境变量中密文存放，使用时解密，确保安全；
   ak: FXTBY3B4CV8VOLAMRUEP

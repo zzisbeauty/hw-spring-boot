@@ -156,4 +156,47 @@ public class RagInfo {
     @ExcelProperty("更新时间")
 	private java.util.Date updateTime;
 
+    // =====================================
+
+    /**索引方案*/
+    @Schema(description = "索引方案")
+    @ExcelProperty("索引方案")
+    @ApiParameter(name = "indexingTechnique", description = "索引方案", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private String indexingTechnique;
+
+    /**检索方法*/
+    @Schema(description = "检索方法")
+    @ExcelProperty("检索方法")
+    @ApiParameter(name = "searchMethod", description = "检索方法", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private String searchMethod;
+
+    /**语义检索阈值开关*/
+    @Schema(description = "语义检索阈值开关")
+    @ExcelProperty("语义检索阈值开关")
+    @ApiParameter(name = "scoreThresholdEnabled", description = "语义检索阈值开关", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private Boolean scoreThresholdEnabled;
+
+    /**重排序启用*/
+    @Schema(description = "重排序启用")
+    @ExcelProperty("重排序启用")
+    @ApiParameter(name = "rerankingEnable", description = "重排序启用", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private Boolean rerankingEnable;
+
+    /**语义检索召回阈值*/
+    @Schema(description = "语义检索召回阈值")
+    @ExcelProperty("语义检索召回阈值")
+    @ApiParameter(name = "scoreThreshold", description = "语义检索召回阈值", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private Double scoreThreshold;
+
+    /**默认召回的片段数量*/
+    @Schema(description = "默认召回的片段数量")
+    @ExcelProperty("默认召回的片段数量")
+    @ApiParameter(name = "topK", description = "默认召回的片段数量", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private Integer topK;
+
+    /**混合检索语义权重*/
+    @Schema(description = "混合检索语义权重")
+    @ExcelProperty("混合检索语义权重")
+    @ApiParameter(name = "weights", description = "混合检索语义权重", location = ApiEnum.PARAMETER_LOCATION_BODY)
+    private Double weights;
 }

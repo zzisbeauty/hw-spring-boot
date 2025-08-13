@@ -28,12 +28,7 @@ import java.net.URLEncoder;
 import java.util.Optional;
 
 
-/**
- * @Description: 知识库基础信息管理
- * @Author: hanwei
- * @Date: 2025-05-26
- * @Version: V1.0
- */
+// 知识库基础信息管理
 @Slf4j
 @Tag(name = "知识库基础信息管理")
 @RestController
@@ -44,43 +39,32 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
     @Autowired
     private IRagInfoService ragInfoService;
 
-    /**
-     * 分页列表查询
-     *
-     * @param ragInfo
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
+    // 分页列表查询
     @AutoLog(value = "知识库基础信息管理-分页列表查询")
     @Operation(summary = "知识库基础信息管理-分页列表查询")
     @RequestMapping(value = "/list", method = {RequestMethod.GET})
-    public Result<?> queryPageList(RagInfo ragInfo,
-                                   @RequestParam(name = "pageNo", defaultValue = "1")
-                                   @ApiParameter(name = "pageNo", description = "页码", required = true, demovalue = "1", defaultvalue = "1")
-                                           Integer pageNo,
-                                   @RequestParam(name = "pageSize", defaultValue = "10")
-                                   @ApiParameter(name = "pageSize", description = "每页数量", required = true, demovalue = "1", defaultvalue = "10")
-                                           Integer pageSize,
-                                   HttpServletRequest req) {
+    public Result<?> queryPageList(
+            RagInfo ragInfo,
+            @RequestParam(name = "pageNo", defaultValue = "1")
+            @ApiParameter(name = "pageNo", description = "页码", required = true, demovalue = "1", defaultvalue = "1")
+            Integer pageNo,
+            @RequestParam(name = "pageSize", defaultValue = "10")
+            @ApiParameter(name = "pageSize", description = "每页数量", required = true, demovalue = "1", defaultvalue = "10")
+            Integer pageSize,
+            HttpServletRequest req
+    ) {
+        // 通过 QueryGenerator.initQueryWrapper() 生成查询条件
         QueryWrapper<RagInfo> queryWrapper = QueryGenerator.initQueryWrapper(ragInfo, req.getParameterMap());
-        Page<RagInfo> page = new Page<RagInfo>(pageNo, pageSize);
-        IPage<RagInfo> pageList = ragInfoService.page(page, queryWrapper);
+        Page<RagInfo> page = new Page<RagInfo>(pageNo, pageSize); // 创建 Page 对象设置分页参数
+        IPage<RagInfo> pageList = ragInfoService.page(page, queryWrapper); // 调用 ragInfoService.page() 执行分页查询
         return Result.OK(pageList);
     }
 
-
-    /**
-     * 添加
-     *
-     * @param ragInfo
-     * @return
-     */
+    // 添加知识库 - √
     @AutoLog(value = "知识库基础信息管理-添加")
     @Operation(summary = "知识库基础信息管理-添加")
     @PostMapping(value = "/add")
-    public Result<?> add(@Valid @RequestBody RagInfo ragInfo) {
+    public Result<?> add(@Valid @RequestBody RagInfo ragInfo) { // 传入
         try {
             return ragInfoService.saveRagInfo(ragInfo);
         } catch (Exception e) {
@@ -89,12 +73,7 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
         }
     }
 
-    /**
-     * 编辑
-     *
-     * @param ragInfo
-     * @return
-     */
+    // 编辑
     @AutoLog(value = "知识库基础信息管理-编辑")
     @Operation(summary = "知识库基础信息管理-编辑")
     @RequestMapping(value = "/edit", method = {RequestMethod.POST})
@@ -102,40 +81,34 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
         return ragInfoService.updateRagInfo(ragInfo);
     }
 
-    /**
-     * 通过id删除
-     *
-     * @param id
-     * @return
-     */
+    // 通过id删除
     @AutoLog(value = "知识库基础信息管理-通过id删除")
     @Operation(summary = "知识库基础信息管理-通过id删除")
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public Result<?> delete(@RequestParam(name = "id", required = true)
-                            @ApiParameter(name = "id", description = "ID", required = true) String id) {
+    public Result<?> delete(
+            @RequestParam(name = "id", required = true)
+            @ApiParameter(name = "id", description = "ID", required = true)
+            String id
+    ) {
         return ragInfoService.removeRagInfoById(id);
     }
 
 
-    /**
-     * 通过id查询
-     *
-     * @param id
-     * @return
-     */
+    // 通过id查询
     @AutoLog(value = "知识库基础信息管理-通过id查询")
     @Operation(summary = "知识库基础信息管理-通过id查询")
     @GetMapping(value = "/queryById")
-    public Result<?> queryById(@RequestParam(name = "id", required = true)
-                               @ApiParameter(name = "id", description = "ID", required = true) String id) {
+    public Result<?> queryById(
+            @RequestParam(name = "id", required = true)
+            @ApiParameter(name = "id", description = "ID", required = true)
+            String id
+    ) {
         RagInfo ragInfo = ragInfoService.getById(id);
         return Result.OK(ragInfo);
     }
 
     /**
-     * 支持文件流的情况下直接使用该方式
-     * 文件流
-     *
+     * 支持文件流的情况下直接使用该方式 - 文件流
      * @param request
      * @param response
      * @param ragInfo
@@ -161,9 +134,7 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
     }
 
     /**
-     * 不支持文件流的情况下直接使用该方式
-     * base64文件
-     *
+     * 不支持文件流的情况下直接使用该方式     base64文件
      * @param request
      * @param ragInfo
      */
@@ -183,7 +154,6 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
 
     /**
      * 知识库召回测试
-     *
      * @param ragRecallVO
      * @return
      */
@@ -196,21 +166,22 @@ public class RagInfoController extends BaseController<RagInfo, IRagInfoService> 
 
     /**
      * 获取知识库知识图谱
-     *
      * @param id
      * @return
      */
     @AutoLog(value = "知识库基础信息管理-获取知识库知识图谱")
     @Operation(summary = "知识库基础信息管理-获取知识库知识图谱")
     @RequestMapping(value = "/getRagGraph", method = {RequestMethod.GET})
-    public Result<?> getRagGraph(@RequestParam
-                                 @ApiParameter(name = "id", description = "ID", required = true) String id) {
+    public Result<?> getRagGraph(
+            @RequestParam
+            @ApiParameter(name = "id", description = "ID", required = true)
+            String id
+    ) {
         return ragInfoService.getRagGraph(id);
     }
 
     /**
      * 研究院:设置知识库
-     *
      * @param choiceRagBO
      * @return
      */

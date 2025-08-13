@@ -1,0 +1,68 @@
+//    // 测试创建知识库
+//    public void testCreateKnowledgeBase(String name) {
+//        try {
+//            System.out.println("\n--- 测试创建知识库 ---");
+//            System.out.println("知识库名称: " + name);
+//
+//            Map<String, Object> paramMap = new HashMap<>();
+//            paramMap.put("name", name);
+//
+//            System.out.println("请求参数: " + paramMap);
+//            System.out.println("请求URL: " + BASE_URL + "/v1/kb/create");
+//
+//            String resultStr = HttpUtil.createPost(BASE_URL + "/v1/kb/create")
+//                    .header("Content-Type", "application/json").body(JSONUtil.toJsonStr(paramMap)).execute().body();
+//
+//            System.out.println("响应结果: " + resultStr);
+//
+//            // 解析响应
+//            JSONObject response = JSONUtil.parseObj(resultStr);
+//            if (response.getInt("code") == 0) {
+//                System.out.println("✅ 创建知识库成功");
+//                Object data = response.get("data");
+//                if (data instanceof JSONObject) {
+//                    JSONObject dataObj = (JSONObject) data;
+//                    String id = dataObj.getStr("id");
+//                    System.out.println("知识库ID: " + id);
+//                }
+//            } else {
+//                System.out.println("❌ 创建知识库失败: " + response.getStr("message"));
+//            }
+//
+//        } catch (Exception e) {
+//            System.out.println("❌ 创建知识库异常: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }
+
+//    // 测试获取知识库列表
+//    public void testGetKnowledgeBaseList(String pageNo, String pageSize, String keywords) {
+//        try {
+//            System.out.println("\n--- 测试获取知识库列表 ---");
+//            System.out.println("页码: " + pageNo + ", 每页数量: " + pageSize + ", 关键词: " + keywords);
+//
+//            HttpRequest request = HttpUtil.createGet(BASE_URL + "/v1/kb/list").header("Content-Type", "application/json")
+//                    .form("page", pageNo).form("page_size", pageSize);
+//
+//            if (StrUtil.isNotEmpty(keywords)) {
+//                request.form("keywords", keywords);
+//            }
+//            System.out.println("请求URL: " + BASE_URL + "/v1/kb/list");
+//            String resultStr = request.execute().body();
+//            System.out.println("响应结果: " + resultStr);
+//
+//            // 解析响应
+//            JSONObject response = JSONUtil.parseObj(resultStr);
+//            if (response.getInt("code") == 0) {
+//                System.out.println("✅ 获取知识库列表成功");
+//                Object data = response.get("data");
+//                System.out.println("返回数据: " + data);
+//            } else {
+//                System.out.println("❌ 获取知识库列表失败: " + response.getStr("message"));
+//            }
+//
+//        } catch (Exception e) {
+//            System.out.println("❌ 获取知识库列表异常: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }

@@ -21,9 +21,8 @@ import org.springframework.web.client.HttpClientErrorException;
 @ControllerAdvice(basePackages = "com.hanwei")
 @Slf4j
 public class GlobalExceptionHandle {
-    /**
-     * 全局异常处理
-     */
+
+    // 全局异常处理
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Result handleException(Exception e) {
