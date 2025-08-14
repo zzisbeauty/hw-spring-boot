@@ -635,88 +635,116 @@ public class ShuiWuHelper {
         }
     }
 
-
-    //================================暂缺=========================================/
-    /**
-     * 文档切片状态切换
-     * @param status 1 启用 0 禁用
-     * @param docId
-     * @param slicingIdList
-     * @return
-     * @throws Exception
-     */
-     // todo 补全
-
-    /**
-     * 设置知识库
-     * @param choiceRagBO
-     * @return
-     * @throws Exception
-     */
-    // todo 在对话模块实现
-
-    /**
-     * 调用模型对话
-     * @param conversationId
-     * @param messageBOList
-     * @return
-     * @throws Exception
-     */
-    public YjyResult modelDialogue(String conversationId, List<MessageBO> messageBOList) throws Exception{
-        Map paramMap = new HashMap<>();
-        //组装数据
-        paramMap.put("conversation_id",conversationId);
-        paramMap.put("messages",messageBOList);
-
-        log.info("调用研究院模型对话接口 发送报文: " +paramMap);
-        //调用研究院接口
-        String resultStr = HttpUtil.createPost(urlPrefix+"/v1/conversation/completion").header(USERNAME,WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
-        YjyResult result = JSONUtil.toBean(resultStr, YjyResult.class);
-        log.info("调用研究院模型对话接口 返回报文: " +result);
-        return result;
+    public Result<?> chunkStatusSwitch(String kbId, String docId, List<String> chunkIds, Integer availableInt) {
+        try {
+            if (StrUtil.isEmpty(kbId)) {return Result.error("kb_id参数不能为空");}
+            if (StrUtil.isEmpty(docId)) {return Result.error("doc_id参数不能为空");}
+            if (chunkIds == null || chunkIds.isEmpty()) {return Result.error("chunk_ids参数不能为空");}
+            if (availableInt == null) {return Result.error("available_int参数不能为空");}
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("kb_id", kbId);
+            paramMap.put("doc_id", docId);
+            paramMap.put("chunk_ids", chunkIds);
+            paramMap.put("available_int", availableInt);
+            log.info("调用研究院文档切片状态切换接口 发送参数: " + paramMap);
+            String resultStr = HttpUtil.createPost(urlPrefix + "/v1/chunk/switch")
+                    .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
+            JSONObject response = JSONUtil.parseObj(resultStr);
+            if (response.getInt("code") == 0) {
+                Object data = response.get("data");
+                log.info("调用研究院文档切片状态切换接口成功");
+                return Result.OK("文档切片状态切换成功", data);
+            } else {
+                String errorMessage = response.getStr("message");
+                log.error("调用研究院文档切片状态切换接口失败: " + errorMessage);
+                return Result.error("文档切片状态切换失败: " + errorMessage);
+            }
+        } catch (Exception e) {
+            log.error("调用研究院文档切片状态切换接口异常", e);
+            return Result.error("文档切片状态切换异常: " + e.getMessage());
+        }
     }
+
+    public Result<?> getDocumentStatus(String kbId, String batch) {
+        try {
+            if (StrUtil.isEmpty(kbId)) {return Result.error("kb_id参数不能为空");}
+            if (StrUtil.isEmpty(batch)) {return Result.error("batch参数不能为空");}
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("kb_id", kbId);
+            paramMap.put("batch", batch);
+            log.info("调用研究院获取文档处理进度接口 发送参数: " + paramMap);
+            String resultStr = HttpUtil.createPost(urlPrefix + "/v1/document/status")
+                    .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
+            JSONObject response = JSONUtil.parseObj(resultStr);
+            if (response.getInt("code") == 0) {
+                Object data = response.get("data");
+                log.info("调用研究院获取文档处理进度接口成功");
+                return Result.OK("获取文档处理进度成功", data);
+            } else {
+                String errorMessage = response.getStr("message");
+                log.error("调用研究院获取文档处理进度接口失败: " + errorMessage);
+                return Result.error("获取文档处理进度失败: " + errorMessage);
+            }
+        } catch (Exception e) {
+            log.error("调用研究院获取文档处理进度接口异常", e);
+            return Result.error("获取文档处理进度异常: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 设置知识库以及调用模型对话
+     * @param userId 用户ID
+     * @param message 消息内容
+     * @param conversationId 会话ID
+     * @param kbId 知识库ID
+     * @return
+     * @throws Exception
+     */
+    public Result<?> modelDialogueNew(String userId, String message, String conversationId, String kbId) {
+        try {
+            if (StrUtil.isEmpty(userId)) {return Result.error("user_id参数不能为空");}
+            if (StrUtil.isEmpty(message)) {return Result.error("message参数不能为空");}
+            if (StrUtil.isEmpty(kbId)) {return Result.error("kb_id参数不能为空");}
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("user_id", userId);
+            paramMap.put("message", message);
+            paramMap.put("conversation_id", conversationId);
+            paramMap.put("kb_id", kbId);
+            log.info("调用研究院模型对话接口 发送参数: " + paramMap);
+            String resultStr = HttpUtil.createPost(urlPrefix + "/v1/conversation/completion_db")
+                    .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
+            JSONObject response = JSONUtil.parseObj(resultStr);
+            if (response.getInt("code") == 0) {
+                Object data = response.get("data");
+                log.info("调用研究院模型对话接口成功");
+                return Result.OK("模型对话调用成功", data);
+            } else {
+                String errorMessage = response.getStr("message");  // 重命名为 errorMessage
+                log.error("调用研究院模型对话接口失败: " + errorMessage);
+                return Result.error("模型对话调用失败: " + errorMessage);
+            }
+        } catch (Exception e) {
+            log.error("调用研究院模型对话接口异常", e);
+            return Result.error("模型对话调用异常: " + e.getMessage());
+        }
+    }
+
+
 
     //================================大模型知识库调用=========================================/
 
     /**
      * 查询知识库知识图谱
      * @param id
-     *
      * @return
      * @throws Exception
      */
     public YjyResult getRagGraphInfo(String id) throws Exception{
         log.info("调用研究院获取知识库知识图谱接口 发送报文: " + id);
-        //调用研究院接口
         String resultStr = HttpUtil.createGet(urlPrefix+"/v1/kb/"+id+"/knowledge_graph")
                 .header(USERNAME,WORKNO).execute().body();
-
         YjyResult result = JSONUtil.toBean(resultStr, YjyResult.class);
         log.info("调用研究院获取知识库知识图谱接口 返回报文: " +result);
-        return result;
-    }
-
-    //================================ 文件状态相关接口 =========================================/
-
-    /**
-     * 知识库文件解析
-     * @param docIdList
-     * @param deleteFlag 是否清除之前的分块
-     * @param runModel 模式 1:文件解析 2:终止解析
-     * @return
-     * @throws Exception
-     */
-    public YjyResult ragFileParsing(List<String> docIdList, Boolean deleteFlag , Integer runModel) throws Exception{
-        Map paramMap = new HashMap<>();
-        paramMap.put("delete",deleteFlag);
-        paramMap.put("doc_ids",docIdList);
-        paramMap.put("run",runModel);
-
-        log.info("调用研究院知识库文件解析接口 发送报文: " +JSONUtil.toJsonStr(paramMap));
-        String resultStr = HttpUtil.createPost(urlPrefix+"/v1/document/run").header(USERNAME,WORKNO).
-                body(JSONUtil.toJsonStr(paramMap)).execute().body();
-        YjyResult result = JSONUtil.toBean(resultStr, YjyResult.class);
-        log.info("调用研究院知识库文件解析接口 返回报文: " +result);
         return result;
     }
 }

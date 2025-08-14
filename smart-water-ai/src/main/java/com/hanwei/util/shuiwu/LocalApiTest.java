@@ -2,6 +2,8 @@ package com.hanwei.util.shuiwu;
 import java.io.File;
 import java.lang.reflect.Field;
 import com.hanwei.core.common.api.vo.Result;
+import java.util.List;
+import java.util.Arrays;
 
 /**
  * 本地API独立测试类
@@ -73,12 +75,107 @@ public class LocalApiTest {
         // test.testGetDocumentSlicingList("02e54617-65ef-435f-815a-85ed6579e634", "1ead7466-dd54-4caf-a0a4-dd1e3174901f", null);
 
         // 测试本地模型
-        test.testGetModelList("llm");  // embedding  rerank
+        // test.testGetModelList("llm");  // embedding  rerank
 
         // 设置默认模型
         // test.testSetDefaultModel("qwen3:4b", "llm", "langgenius/ollama/ollama");
 
+        // 测试文档切片状态切换 - 禁用
+//        List<String> chunkIds = Arrays.asList("b1f9bcd2-db86-4ce5-8fc2-b677ff25186f");
+//        test.testChunkStatusSwitch(
+//                "5edb7f74-9f47-4244-951a-807b6e9626b4",
+//                "f96cf4c5-413e-43d4-9382-7ad0277da187",
+//                chunkIds,
+//                1
+//        );
+
+        // 测试获取文档处理进度
+//        test.testGetDocumentStatus(
+//                "a26e10d8-c37e-44a5-afbc-e21b2314c1e2",
+//                "20250811070027240659"
+//        );
+
+        // 测试设置知识库进行对话过程
+        test.testModelDialogueNew(
+                "test_user_11：26",
+                "道人说的'蠢物'是什么",
+                "",
+                "5edb7f74-9f47-4244-951a-807b6e9626b4");
         System.out.println("=== 测试完成 ===");
+    }
+
+    public Result<?> testGetDocumentStatus(String kbId, String batch) {
+        System.out.println("\n--- 测试获取文档处理进度接口 ---");
+        System.out.println("知识库ID: " + kbId);
+        System.out.println("批次号: " + batch);
+
+        try {
+            Result<?> result = shuiWuHelper.getDocumentStatus(kbId, batch);
+            System.out.println("结果: " + (result.isSuccess() ? "✅ 成功" : "❌ 失败"));
+            if (result.getResult() != null) {
+                System.out.println("返回数据: " + result.getResult());
+            }
+            if (!result.isSuccess()) {
+                System.out.println("错误信息: " + result.getMessage());
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("结果: ❌ 异常");
+            System.out.println("异常信息: " + e.getMessage());
+            e.printStackTrace();
+            return Result.error("测试异常: " + e.getMessage());
+        }
+    }
+
+    public Result<?> testChunkStatusSwitch(String kbId, String docId, List<String> chunkIds, Integer availableInt) {
+        System.out.println("\n--- 测试文档切片状态切换接口 ---");
+        System.out.println("知识库ID: " + kbId);
+        System.out.println("文档ID: " + docId);
+        System.out.println("切片IDs: " + chunkIds);
+        System.out.println("状态: " + (availableInt == 1 ? "启用" : "禁用"));
+
+        try {
+            Result<?> result = shuiWuHelper.chunkStatusSwitch(kbId, docId, chunkIds, availableInt);
+            System.out.println("结果: " + (result.isSuccess() ? "✅ 成功" : "❌ 失败"));
+            if (result.getResult() != null) {
+                System.out.println("返回数据: " + result.getResult());
+            }
+            if (!result.isSuccess()) {
+                System.out.println("错误信息: " + result.getMessage());
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("结果: ❌ 异常");
+            System.out.println("异常信息: " + e.getMessage());
+            e.printStackTrace();
+            return Result.error("测试异常: " + e.getMessage());
+        }
+    }
+
+    public Result<?> testModelDialogueNew(String userId, String message, String conversationId, String kbId) {
+        /**
+         System.out.println("\n--- 测试模型对话接口(新) ---");
+         System.out.println("用户ID: " + userId);
+         System.out.println("消息内容: " + message);
+         System.out.println("会话ID: " + conversationId);
+         System.out.println("知识库ID: " + kbId);
+         */
+        try {
+            Result<?> result = shuiWuHelper.modelDialogueNew(userId, message, conversationId, kbId);
+            System.out.println("结果: " + (result.isSuccess() ? "✅ 成功" : "❌ 失败"));
+            if (result.getResult() != null) {
+                System.out.println("返回数据: " + result.getResult());
+            }
+            if (!result.isSuccess()) {
+                System.out.println("错误信息: " + result.getMessage());
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("结果: ❌ 异常");
+            System.out.println("异常信息: " + e.getMessage());
+            e.printStackTrace();
+            return Result.error("测试异常: " + e.getMessage());
+        }
     }
 
     public Result<?> testGetModelList(String modelType) {

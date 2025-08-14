@@ -94,7 +94,7 @@ public class RagInfoServiceImpl extends ServiceImpl<RagInfoMapper, RagInfo> impl
     public Result<?> saveRagInfo(RagInfo ragInfo) {
         YjyResult yjyResult = null;
         try {
-            yjyResult = shuiwuHelper.addRagInfo(ragInfo.getName()); //  调用业务功能
+            yjyResult = yanjiuyuanHelper.addRagInfo(ragInfo.getName()); //  调用业务功能
             if(null == yjyResult || 0!=yjyResult.getCode()){
                 log.error("调用研究院新增知识库失败 "+ yjyResult.getMessage());
                 return Result.error(200,"调用研究院新增知识库失败 "+ yjyResult.getMessage());
@@ -123,34 +123,6 @@ public class RagInfoServiceImpl extends ServiceImpl<RagInfoMapper, RagInfo> impl
         ragInfo.setVectorSimilarityWeight(0.3);
         ragInfo.setTopN(8);
 
-        /**
-        // 水务API结果解析
-        JSONObject rootObject = (JSONObject) yjyResult.getData();
-        String yjyRagId = rootObject.getStr("id");
-        // log.info("解析出的 yjyRagId: {}", yjyRagId);
-
-        // todo 接口返回有字段，最好补全一个参数解析方法，以便补全数据库表中存储的信息
-        // 使用反射打印所有字段 - 对 local shuiwu api 返回的结果做一些验证
-        log.info("=== RagInfo 字段调试信息（反射方式）===");
-        try {
-            Field[] fields = ragInfo.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                Object value = field.get(ragInfo);
-                if (value instanceof String) {
-                    String strValue = (String) value;
-                    log.info("{}: [{}] (长度: {})", field.getName(), strValue, strValue != null ? strValue.length() : 0);
-                } else {
-                    log.info("{}: [{}]", field.getName(), value);
-                }
-            }
-        } catch (Exception e) {
-            log.error("反射获取字段值失败", e);
-        }
-        log.info("=== 字段调试信息结束 ===");
-        */
-
-        save(ragInfo); // 增一条数据， 增过程 sb web mapper 自动根据 entity 和表结构实现 sql 完成新增
         return Result.ok("保存成功");
     }
 
