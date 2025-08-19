@@ -7,8 +7,9 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.http.Method;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONArray;
+// import cn.hutool.json.JSONArray;
+// import cn.hutool.core.io.FileUtil;
+
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -17,20 +18,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import com.hanwei.core.common.api.vo.Result;
-import com.hanwei.rag.bo.ChoiceRagBO;
-import com.hanwei.rag.bo.MessageBO;
-import com.hanwei.rag.entity.RagInfo;
-import com.hanwei.rag.vo.RagRecallVO;
+// import com.hanwei.rag.bo.ChoiceRagBO;
+// import com.hanwei.rag.bo.MessageBO;
+// import com.hanwei.rag.entity.RagInfo;
+// import com.hanwei.rag.vo.RagRecallVO;
 import com.hanwei.util.yanjiuyuan.YjyResult;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+// import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.FileInputStream;
+// import java.io.IOException;
+// import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 
@@ -42,9 +43,9 @@ import java.util.Map;
 
 
 /**
- * @author CX
+ * @author hanwei
  * @version : [v1.0]
- * @description : [调用研究院提供接口]
+ * @description : [调用水务提供接口]
  * @createTime : [2025/5/26 10:00]
  * @updateRemark : [说明本次修改内容]
  */
@@ -60,9 +61,8 @@ public class ShuiWuHelper {
     private final String USERNAME= "UserName"; // 研究院鉴权临时用，后期去掉
     private final String WORKNO="H05583"; // 研究院鉴权临时用，后期去掉
 
-
     /**
-     * 获取知识库列表 - 本地接口版本
+     * 获取知识库列表 - 水务接口版本
      * @param pageNo 页码
      * @param pageSize 每页数量
      * @param ragName 知识库名称（可选）
@@ -74,23 +74,23 @@ public class ShuiWuHelper {
             paramMap.put("page", pageNo);
             paramMap.put("page_size", pageSize);
             if (StrUtil.isNotEmpty(ragName)) {paramMap.put("keywords", ragName);}
-            log.info("调用本地获取知识库列表接口 发送参数: " + paramMap);
+            log.info("调用水务获取知识库列表接口 发送参数: " + paramMap);
             HttpRequest request = HttpUtil.createGet(urlPrefix + "/v1/kb/list")
                     .header("Content-Type", "application/json").form("page", pageNo).form("page_size", pageSize);
             if (StrUtil.isNotEmpty(ragName)) {request.form("keywords", ragName);}
             String resultStr = request.execute().body();
-            JSONObject response = JSONUtil.parseObj(resultStr); // 解析本地接口返回的结果
+            JSONObject response = JSONUtil.parseObj(resultStr); // 解析水务接口返回的结果
             if (response.getInt("code") == 0) { // 成功情况
                 Object data = response.get("data");
-                log.info("调用本地获取知识库列表接口成功 返回数据: " + data);
+                log.info("调用水务获取知识库列表接口成功 返回数据: " + data);
                 return Result.OK("获取知识库列表成功", data);
             } else { // 失败情况
                 String message = response.getStr("message");
-                log.error("调用本地获取知识库列表接口失败: " + message);
+                log.error("调用水务获取知识库列表接口失败: " + message);
                 return Result.error("获取知识库列表失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地获取知识库列表接口异常", e);
+            log.error("调用水务获取知识库列表接口异常", e);
             return Result.error("获取知识库列表异常: " + e.getMessage());
         }
     }
@@ -100,22 +100,22 @@ public class ShuiWuHelper {
         try {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("name", ragName);
-            log.info("调用本地创建知识库接口 发送参数: " + paramMap);
+            log.info("调用水务创建知识库接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/kb/create")
                     .header("Content-Type", "application/json")
                     .body(JSONUtil.toJsonStr(paramMap)).execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地创建知识库接口成功 返回数据: " + data);
+                log.info("调用水务创建知识库接口成功 返回数据: " + data);
                 return Result.OK("创建知识库成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地创建知识库接口失败: " + message);
+                log.error("调用水务创建知识库接口失败: " + message);
                 return Result.error("创建知识库失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地创建知识库接口异常", e);
+            log.error("调用水务创建知识库接口异常", e);
             return Result.error("创建知识库异常: " + e.getMessage());
         }
     }
@@ -123,22 +123,22 @@ public class ShuiWuHelper {
     // 获取知识库详情 - √
     public Result<?> getLocalKnowledgeBaseDetail(String kbId) {
         try {
-            log.info("调用本地获取知识库详情接口 发送参数: " + kbId);
+            log.info("调用水务获取知识库详情接口 发送参数: " + kbId);
             String resultStr = HttpUtil.createGet(urlPrefix + "/v1/kb/detail")
                     .header("Content-Type", "application/json").form("kb_id", kbId)
                     .execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地获取知识库详情接口成功");
+                log.info("调用水务获取知识库详情接口成功");
                 return Result.OK("获取知识库详情成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地获取知识库详情接口失败: " + message);
+                log.error("调用水务获取知识库详情接口失败: " + message);
                 return Result.error("获取知识库详情失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地获取知识库详情接口异常", e);
+            log.error("调用水务获取知识库详情接口异常", e);
             return Result.error("获取知识库详情异常: " + e.getMessage());
         }
     }
@@ -214,7 +214,7 @@ public class ShuiWuHelper {
         try {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("kb_id", kbId);
-            log.info("调用本地删除知识库接口 发送参数: " + paramMap);
+            log.info("调用水务删除知识库接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createRequest(Method.DELETE, urlPrefix + "/v1/kb/rm")
                     .header("Content-Type", "application/json").body(JSONUtil.toJsonStr(paramMap))
                     .execute().body();
@@ -222,15 +222,15 @@ public class ShuiWuHelper {
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) { // 成功情况
                 Object data = response.get("data");
-                log.info("调用本地删除知识库接口成功 返回数据: " + data);
+                log.info("调用水务删除知识库接口成功 返回数据: " + data);
                 return Result.OK("删除知识库成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地删除知识库接口失败: " + message);
+                log.error("调用水务删除知识库接口失败: " + message);
                 return Result.error("删除知识库失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地删除知识库接口异常", e);
+            log.error("调用水务删除知识库接口异常", e);
             return Result.error("删除知识库异常: " + e.getMessage());
         }
     }
@@ -247,22 +247,22 @@ public class ShuiWuHelper {
             paramMap.put("score_threshold_enabled", score_threshold_enabled);
             paramMap.put("vector_similarity_weight", vector_similarity_weight);
             paramMap.put("similarity_threshold", similarity_threshold);
-            log.info("调用本地知识库召回接口 发送参数: " + paramMap);
+            log.info("调用水务知识库召回接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/chunk/retrieval_test")
                     .header("Content-Type", "application/json").body(JSONUtil.toJsonStr(paramMap)).execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地知识库召回接口成功");
+                log.info("调用水务知识库召回接口成功");
                 return Result.OK("知识库召回成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地知识库召回接口失败: " + message);
+                log.error("调用水务知识库召回接口失败: " + message);
                 return Result.error("知识库召回失败: " + message);
             }
 
         } catch (Exception e) {
-            log.error("调用本地知识库召回接口异常", e);
+            log.error("调用水务知识库召回接口异常", e);
             return Result.error("知识库召回异常: " + e.getMessage());
         }
     }
@@ -391,7 +391,7 @@ public class ShuiWuHelper {
             paramMap.put("page", pageNo != null ? pageNo : "1");
             paramMap.put("page_size", pageSize != null ? pageSize : "10");
             if (StrUtil.isNotEmpty(fileName)) {paramMap.put("keywords", fileName);}
-            log.info("调用本地查询知识库文件列表接口 发送参数: " + paramMap);
+            log.info("调用水务查询知识库文件列表接口 发送参数: " + paramMap);
             HttpRequest request = HttpUtil.createGet(urlPrefix + "/v1/document/list")
                     .header("Content-Type", "application/json")
                     .form("kb_id", kbId)
@@ -404,20 +404,20 @@ public class ShuiWuHelper {
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地查询知识库文件列表接口成功");
+                log.info("调用水务查询知识库文件列表接口成功");
                 return Result.OK("查询文件列表成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地查询知识库文件列表接口失败: " + message);
+                log.error("调用水务查询知识库文件列表接口失败: " + message);
                 return Result.error("查询文件列表失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地查询知识库文件列表接口异常", e);
+            log.error("调用水务查询知识库文件列表接口异常", e);
             return Result.error("查询文件列表异常: " + e.getMessage());
         }
     }
 
-    // 本地直接请求服务器下载文件，可以下载文件到本地
+    // 水务直接请求服务器下载文件，可以下载文件到水务
     public Result<?> downloadFileFromServer(String kbId, String documentId, String downloadDir) {
         try {
             // 获取项目根路径并创建downloads目录
@@ -489,22 +489,22 @@ public class ShuiWuHelper {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("kb_id", kbId);
             paramMap.put("doc_id", docId);
-            log.info("调用本地删除文档接口 发送参数: " + paramMap);
+            log.info("调用水务删除文档接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createRequest(Method.DELETE, urlPrefix + "/v1/document/rm")
                     .header("Content-Type", "application/json").body(JSONUtil.toJsonStr(paramMap))
                     .execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地删除文档接口成功");
+                log.info("调用水务删除文档接口成功");
                 return Result.OK("删除文档成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地删除文档接口失败: " + message);
+                log.error("调用水务删除文档接口失败: " + message);
                 return Result.error("删除文档失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地删除文档接口异常", e);
+            log.error("调用水务删除文档接口异常", e);
             return Result.error("删除文档异常: " + e.getMessage());
         }
     }
@@ -516,7 +516,7 @@ public class ShuiWuHelper {
             paramMap.put("kb_id", kbId);
             paramMap.put("doc_id", docId);
             if (StrUtil.isNotEmpty(keywords)) {paramMap.put("keywords", keywords);}
-            log.info("调用本地查询文档切片列表接口 发送参数: " + paramMap);
+            log.info("调用水务查询文档切片列表接口 发送参数: " + paramMap);
             HttpRequest request = HttpUtil.createGet(urlPrefix + "/v1/chunk/list")
                     .header("Content-Type", "application/json").form("kb_id", kbId).form("doc_id", docId);
             if (StrUtil.isNotEmpty(keywords)) {
@@ -526,15 +526,15 @@ public class ShuiWuHelper {
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地查询文档切片列表接口成功");
+                log.info("调用水务查询文档切片列表接口成功");
                 return Result.OK("查询文档切片列表成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地查询文档切片列表接口失败: " + message);
+                log.error("调用水务查询文档切片列表接口失败: " + message);
                 return Result.error("查询文档切片列表失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地查询文档切片列表接口异常", e);
+            log.error("调用水务查询文档切片列表接口异常", e);
             return Result.error("查询文档切片列表异常: " + e.getMessage());
         }
     }
@@ -546,7 +546,7 @@ public class ShuiWuHelper {
             paramMap.put("kb_id", kbId);
             paramMap.put("doc_id", docId);
             paramMap.put("action", action);
-            log.info("调用本地文档状态控制接口 发送参数: " + paramMap);
+            log.info("调用水务文档状态控制接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/document/change_status")
                     .header("Content-Type", "application/json").body(JSONUtil.toJsonStr(paramMap))
                     .execute().body();
@@ -554,15 +554,15 @@ public class ShuiWuHelper {
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
                 String actionDesc = "enable".equals(action) ? "启用" : "禁用";
-                log.info("调用本地文档状态控制接口成功");
+                log.info("调用水务文档状态控制接口成功");
                 return Result.OK("文档" + actionDesc + "成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地文档状态控制接口失败: " + message);
+                log.error("调用水务文档状态控制接口失败: " + message);
                 return Result.error("文档状态控制失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地文档状态控制接口异常", e);
+            log.error("调用水务文档状态控制接口异常", e);
             return Result.error("文档状态控制异常: " + e.getMessage());
         }
     }
@@ -584,7 +584,7 @@ public class ShuiWuHelper {
             paramMap.put("model", model);
             paramMap.put("model_type", modelType);
             paramMap.put("provider", provider);
-            log.info("调用本地设置默认模型接口 发送参数: " + paramMap);
+            log.info("调用水务设置默认模型接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/user/set_default")
                     .header("Content-Type", "application/json")
                     .body(JSONUtil.toJsonStr(paramMap))
@@ -594,15 +594,15 @@ public class ShuiWuHelper {
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地设置默认模型接口成功");
+                log.info("调用水务设置默认模型接口成功");
                 return Result.OK("设置默认模型成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地设置默认模型接口失败: " + message);
+                log.error("调用水务设置默认模型接口失败: " + message);
                 return Result.error("设置默认模型失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地设置默认模型接口异常", e);
+            log.error("调用水务设置默认模型接口异常", e);
             return Result.error("设置默认模型异常: " + e.getMessage());
         }
     }
@@ -615,22 +615,22 @@ public class ShuiWuHelper {
             }
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("model_type", modelType);
-            log.info("调用本地获取模型列表接口 发送参数: " + paramMap);
+            log.info("调用水务获取模型列表接口 发送参数: " + paramMap);
             HttpRequest request = HttpUtil.createGet(urlPrefix + "/v1/llm/my_llms")
                     .header("Content-Type", "application/json").form("model_type", modelType);
             String resultStr = request.execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用本地获取模型列表接口成功");
+                log.info("调用水务获取模型列表接口成功");
                 return Result.OK("获取模型列表成功", data);
             } else {
                 String message = response.getStr("message");
-                log.error("调用本地获取模型列表接口失败: " + message);
+                log.error("调用水务获取模型列表接口失败: " + message);
                 return Result.error("获取模型列表失败: " + message);
             }
         } catch (Exception e) {
-            log.error("调用本地获取模型列表接口异常", e);
+            log.error("调用水务获取模型列表接口异常", e);
             return Result.error("获取模型列表异常: " + e.getMessage());
         }
     }
@@ -646,21 +646,21 @@ public class ShuiWuHelper {
             paramMap.put("doc_id", docId);
             paramMap.put("chunk_ids", chunkIds);
             paramMap.put("available_int", availableInt);
-            log.info("调用研究院文档切片状态切换接口 发送参数: " + paramMap);
+            log.info("调用水务文档切片状态切换接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/chunk/switch")
                     .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用研究院文档切片状态切换接口成功");
+                log.info("调用水务文档切片状态切换接口成功");
                 return Result.OK("文档切片状态切换成功", data);
             } else {
                 String errorMessage = response.getStr("message");
-                log.error("调用研究院文档切片状态切换接口失败: " + errorMessage);
+                log.error("调用水务院文档切片状态切换接口失败: " + errorMessage);
                 return Result.error("文档切片状态切换失败: " + errorMessage);
             }
         } catch (Exception e) {
-            log.error("调用研究院文档切片状态切换接口异常", e);
+            log.error("调用水务文档切片状态切换接口异常", e);
             return Result.error("文档切片状态切换异常: " + e.getMessage());
         }
     }
@@ -672,21 +672,21 @@ public class ShuiWuHelper {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("kb_id", kbId);
             paramMap.put("batch", batch);
-            log.info("调用研究院获取文档处理进度接口 发送参数: " + paramMap);
+            log.info("调用水务获取文档处理进度接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/document/status")
                     .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用研究院获取文档处理进度接口成功");
+                log.info("调用水务获取文档处理进度接口成功");
                 return Result.OK("获取文档处理进度成功", data);
             } else {
                 String errorMessage = response.getStr("message");
-                log.error("调用研究院获取文档处理进度接口失败: " + errorMessage);
+                log.error("调用水务获取文档处理进度接口失败: " + errorMessage);
                 return Result.error("获取文档处理进度失败: " + errorMessage);
             }
         } catch (Exception e) {
-            log.error("调用研究院获取文档处理进度接口异常", e);
+            log.error("调用水务获取文档处理进度接口异常", e);
             return Result.error("获取文档处理进度异常: " + e.getMessage());
         }
     }
@@ -710,21 +710,21 @@ public class ShuiWuHelper {
             paramMap.put("message", message);
             paramMap.put("conversation_id", conversationId);
             paramMap.put("kb_id", kbId);
-            log.info("调用研究院模型对话接口 发送参数: " + paramMap);
+            log.info("调用水务模型对话接口 发送参数: " + paramMap);
             String resultStr = HttpUtil.createPost(urlPrefix + "/v1/conversation/completion_db")
                     .header(USERNAME, WORKNO).body(JSONUtil.toJsonStr(paramMap)).execute().body();
             JSONObject response = JSONUtil.parseObj(resultStr);
             if (response.getInt("code") == 0) {
                 Object data = response.get("data");
-                log.info("调用研究院模型对话接口成功");
+                log.info("调用水务模型对话接口成功");
                 return Result.OK("模型对话调用成功", data);
             } else {
                 String errorMessage = response.getStr("message");  // 重命名为 errorMessage
-                log.error("调用研究院模型对话接口失败: " + errorMessage);
+                log.error("调用水务模型对话接口失败: " + errorMessage);
                 return Result.error("模型对话调用失败: " + errorMessage);
             }
         } catch (Exception e) {
-            log.error("调用研究院模型对话接口异常", e);
+            log.error("调用水务模型对话接口异常", e);
             return Result.error("模型对话调用异常: " + e.getMessage());
         }
     }

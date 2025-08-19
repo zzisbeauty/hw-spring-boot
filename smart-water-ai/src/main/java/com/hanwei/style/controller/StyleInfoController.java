@@ -9,7 +9,7 @@ import com.hanwei.core.annotation.AutoLog;
 import com.hanwei.core.annotation.AutoRegister;
 import com.hanwei.core.base.BaseController;
 import com.hanwei.core.base.QueryGenerator;
-import com.hanwei.core.common.CommonConstant;
+// import com.hanwei.core.common.CommonConstant;
 import com.hanwei.core.common.api.vo.Result;
 import com.hanwei.style.entity.StyleInfo;
 import com.hanwei.style.service.IStyleInfoService;

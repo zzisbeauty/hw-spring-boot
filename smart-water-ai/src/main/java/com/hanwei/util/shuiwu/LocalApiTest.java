@@ -1,12 +1,16 @@
 package com.hanwei.util.shuiwu;
-import java.io.File;
-import java.lang.reflect.Field;
+
 import com.hanwei.core.common.api.vo.Result;
+
 import java.util.List;
-import java.util.Arrays;
+// import java.util.Arrays;
+
+// import java.io.File;
+import java.lang.reflect.Field;
+
 
 /**
- * 本地API独立测试类
+ * 水务API测试
  */
 
 public class LocalApiTest {
@@ -97,10 +101,11 @@ public class LocalApiTest {
 
         // 测试设置知识库进行对话过程
         test.testModelDialogueNew(
-                "test_user_11：26",
-                "道人说的'蠢物'是什么",
-                "",
-                "5edb7f74-9f47-4244-951a-807b6e9626b4");
+                "test_user_16：35",
+                // "道人说的'蠢物'是什么",
+                "参加了什么表演吗？",
+                "c2cf4108-b926-4428-af78-33c000baae93",
+                "518c4657-afd9-4095-911a-8f53ed0cd903");
         System.out.println("=== 测试完成 ===");
     }
 

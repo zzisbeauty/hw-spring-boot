@@ -2,9 +2,11 @@ package com.hanwei.rag.controller;
 
 import cn.hutool.http.HttpInputStream;
 import cn.hutool.http.HttpResponse;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import com.hanwei.core.annotation.ApiKind;
 import com.hanwei.core.annotation.ApiParameter;
 import com.hanwei.core.annotation.AutoLog;
@@ -17,23 +19,29 @@ import com.hanwei.rag.bo.FileParsingParamVO;
 import com.hanwei.rag.bo.RagFileSwitchBO;
 import com.hanwei.rag.entity.RagFileInfo;
 import com.hanwei.rag.service.IRagFileInfoService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.io.FileInputStream;
+
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 
 
 /**
